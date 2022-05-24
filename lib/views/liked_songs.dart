@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:spotify_clone/constants/liked_songs.dart';
+import 'package:spotify_clone/models/song.dart';
+import 'package:spotify_clone/widgets/currently_playing_song.dart';
 import 'package:spotify_clone/widgets/song_tile.dart';
 
 class LikedSongsView extends StatefulWidget {
@@ -31,6 +33,29 @@ class _LikedSongsViewState extends State<LikedSongsView> {
         }
       });
     });
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   Overlay.of(context)?.insert(OverlayEntry(
+    //     builder: (context) => Positioned(
+    //       bottom: 8,
+    //       left: 8,
+    //       right: 8,
+    //       child: SafeArea(
+    //         child: Material(
+    //           color: Colors.transparent,
+    //           child: CurrentlyPlayingSong(
+    //             song: Song(
+    //               coverImage: 'assets/images/red_taylors_version.png',
+    //               title: 'Starlight (Taylor\'s Version)',
+    //               artistName: 'Taylor Swift',
+    //               tags: [],
+    //               liked: false,
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   ));
+    // });
   }
 
   @override
@@ -55,6 +80,23 @@ class _LikedSongsViewState extends State<LikedSongsView> {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(8),
+        child: SafeArea(
+          child: Material(
+            color: Colors.transparent,
+            child: CurrentlyPlayingSong(
+              song: Song(
+                coverImage: 'assets/images/red_taylors_version.png',
+                title: 'Starlight (Taylor\'s Version)',
+                artistName: 'Taylor Swift',
+                tags: [],
+                liked: false,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

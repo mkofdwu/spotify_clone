@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       darkTheme: ThemeData(
         fontFamily: 'CircularStd',
         primarySwatch: Colors.blue,
@@ -24,30 +25,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       themeMode: ThemeMode.dark,
-      home: Stack(
-        children: [
-          LikedSongsView(),
-          Positioned(
-            bottom: 8,
-            left: 8,
-            right: 8,
-            child: SafeArea(
-              child: Material(
-                color: Colors.transparent,
-                child: CurrentlyPlayingSong(
-                  song: Song(
-                    coverImage: 'assets/images/red_taylors_version.png',
-                    title: 'Starlight (Taylor\'s Version)',
-                    artistName: 'Taylor Swift',
-                    tags: [],
-                    liked: false,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+      home: const LikedSongsView(),
     );
   }
 }
