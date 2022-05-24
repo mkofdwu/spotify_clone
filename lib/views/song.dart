@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:spotify_clone/constants/palette.dart';
+import 'package:spotify_clone/models/song.dart';
 import 'package:spotify_clone/widgets/opacity_feedback.dart';
 
 class SongView extends StatefulWidget {
-  const SongView({Key? key}) : super(key: key);
+  final Song song;
+
+  const SongView({Key? key, required this.song}) : super(key: key);
 
   @override
   State<SongView> createState() => _SongViewState();
@@ -30,7 +34,7 @@ class _SongViewState extends State<SongView> {
               _buildTop(),
               SizedBox(height: 60),
               Image.asset(
-                'assets/images/monster.jpeg',
+                widget.song.coverImage,
                 width: width - 48,
                 height: width - 48,
                 fit: BoxFit.cover,
@@ -141,11 +145,15 @@ class _SongViewState extends State<SongView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '怪物',
+                  widget.song.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                 ),
                 Text(
-                  'YOASOBI',
+                  widget.song.artistName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.6),
                     fontSize: 16,
@@ -154,7 +162,12 @@ class _SongViewState extends State<SongView> {
               ],
             ),
           ),
-          Icon(Icons.favorite, color: Color(0xFF1ed760), size: 24),
+          SizedBox(width: 16),
+          Icon(
+            widget.song.liked ? Icons.favorite : Icons.favorite_border,
+            color: widget.song.liked ? Palette.green : Colors.white,
+            size: 24,
+          ),
         ],
       );
 }

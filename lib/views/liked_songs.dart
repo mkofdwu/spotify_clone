@@ -2,8 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:spotify_clone/constants/liked_songs.dart';
+import 'package:spotify_clone/constants/palette.dart';
 import 'package:spotify_clone/models/song.dart';
 import 'package:spotify_clone/widgets/currently_playing_song.dart';
+import 'package:spotify_clone/widgets/shrink_feedback.dart';
 import 'package:spotify_clone/widgets/song_tile.dart';
 
 class LikedSongsView extends StatefulWidget {
@@ -18,6 +20,7 @@ class _LikedSongsViewState extends State<LikedSongsView> {
   // feels kind of hacky idk
   double _appBarOpacity = 0;
   double _appBarTextOpacity = 0;
+  Song _selectedSong = likedSongs[0];
 
   @override
   void initState() {
@@ -33,29 +36,6 @@ class _LikedSongsViewState extends State<LikedSongsView> {
         }
       });
     });
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    //   Overlay.of(context)?.insert(OverlayEntry(
-    //     builder: (context) => Positioned(
-    //       bottom: 8,
-    //       left: 8,
-    //       right: 8,
-    //       child: SafeArea(
-    //         child: Material(
-    //           color: Colors.transparent,
-    //           child: CurrentlyPlayingSong(
-    //             song: Song(
-    //               coverImage: 'assets/images/red_taylors_version.png',
-    //               title: 'Starlight (Taylor\'s Version)',
-    //               artistName: 'Taylor Swift',
-    //               tags: [],
-    //               liked: false,
-    //             ),
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //   ));
-    // });
   }
 
   @override
@@ -74,7 +54,15 @@ class _LikedSongsViewState extends State<LikedSongsView> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
-                (context, i) => SongTile(song: likedSongs[i]),
+                (context, i) => ShrinkFeedback(
+                  child: SongTile(
+                    song: likedSongs[i],
+                    isSelected: likedSongs[i] == _selectedSong,
+                  ),
+                  onPressed: () {
+                    setState(() => _selectedSong = likedSongs[i]);
+                  },
+                ),
                 childCount: likedSongs.length,
               ),
             ),
@@ -87,13 +75,7 @@ class _LikedSongsViewState extends State<LikedSongsView> {
           child: Material(
             color: Colors.transparent,
             child: CurrentlyPlayingSong(
-              song: Song(
-                coverImage: 'assets/images/red_taylors_version.png',
-                title: 'Starlight (Taylor\'s Version)',
-                artistName: 'Taylor Swift',
-                tags: [],
-                liked: false,
-              ),
+              song: _selectedSong,
             ),
           ),
         ),
@@ -202,7 +184,7 @@ class _LikedSongsViewState extends State<LikedSongsView> {
             height: 50,
             margin: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: Color(0xFF1ed760),
+              color: Palette.green,
               borderRadius: BorderRadius.circular(25),
             ),
             child: Center(
@@ -222,7 +204,7 @@ class _LikedSongsViewState extends State<LikedSongsView> {
               child: Center(
                 child: Icon(
                   Icons.shuffle,
-                  color: Color(0xFF1ed760),
+                  color: Palette.green,
                   size: 16,
                 ),
               ),

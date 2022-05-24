@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:spotify_clone/constants/palette.dart';
 import 'package:spotify_clone/models/song.dart';
 import 'package:spotify_clone/widgets/song_tag.dart';
 
 class SongTile extends StatelessWidget {
   final Song song;
+  final bool isSelected;
 
-  const SongTile({Key? key, required this.song}) : super(key: key);
+  const SongTile({
+    Key? key,
+    required this.song,
+    required this.isSelected,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +31,7 @@ class SongTile extends StatelessWidget {
           ),
           SizedBox(width: 16),
           if (song.liked) ...[
-            Icon(Icons.favorite, color: Color(0xFF1ed760), size: 20),
+            Icon(Icons.favorite, color: Palette.green, size: 20),
             SizedBox(width: 24),
           ],
           Icon(
@@ -45,6 +51,7 @@ class SongTile extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
+              color: isSelected ? Palette.green : Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),

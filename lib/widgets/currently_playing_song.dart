@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spotify_clone/constants/palette.dart';
 import 'package:spotify_clone/models/song.dart';
 import 'package:spotify_clone/views/song.dart';
 
@@ -12,7 +13,8 @@ class CurrentlyPlayingSong extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(PageRouteBuilder(
-          pageBuilder: ((context, animation, secondaryAnimation) => SongView()),
+          pageBuilder: ((context, animation, secondaryAnimation) =>
+              SongView(song: song)),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             final tween = Tween(begin: Offset(0, 1), end: Offset(0, 0));
             return SlideTransition(
@@ -50,10 +52,14 @@ class CurrentlyPlayingSong extends StatelessWidget {
                     children: [
                       Text(
                         song.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontWeight: FontWeight.w700),
                       ),
                       Text(
                         song.artistName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.6),
                           fontSize: 13,
@@ -62,9 +68,10 @@ class CurrentlyPlayingSong extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(width: 12),
                 Icon(
                   song.liked ? Icons.favorite : Icons.favorite_border,
-                  color: song.liked ? Color(0xFF1ed760) : Colors.white,
+                  color: song.liked ? Palette.green : Colors.white,
                   size: 28,
                 ),
                 SizedBox(width: 12),
