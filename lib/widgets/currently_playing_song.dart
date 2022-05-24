@@ -9,7 +9,7 @@ class CurrentlyPlayingSong extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 64,
+      height: 60,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: Color(0xFF48443C),
@@ -36,16 +36,13 @@ class CurrentlyPlayingSong extends StatelessWidget {
                   children: [
                     Text(
                       song.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.w700),
                     ),
-                    SizedBox(height: 2),
                     Text(
                       song.artistName,
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.6),
-                        fontWeight: FontWeight.w500,
+                        fontSize: 13,
                       ),
                     ),
                   ],
@@ -56,16 +53,16 @@ class CurrentlyPlayingSong extends StatelessWidget {
                 color: song.liked ? Color(0xFF1ed760) : Colors.white,
                 size: 28,
               ),
-              SizedBox(width: 16),
+              SizedBox(width: 12),
               Icon(
                 Icons.play_arrow,
                 size: 34,
                 color: Colors.white,
               ),
-              SizedBox(width: 8),
+              SizedBox(width: 4),
             ],
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 5),
           // progress bar
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
