@@ -55,9 +55,13 @@ class _LikedSongsViewState extends State<LikedSongsView> {
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, i) => ShrinkFeedback(
-                  child: SongTile(
-                    song: likedSongs[i],
-                    isSelected: likedSongs[i] == _selectedSong,
+                  // wrap with material to make entire tile clickable
+                  child: Material(
+                    color: Colors.transparent,
+                    child: SongTile(
+                      song: likedSongs[i],
+                      isSelected: likedSongs[i] == _selectedSong,
+                    ),
                   ),
                   onPressed: () {
                     setState(() => _selectedSong = likedSongs[i]);

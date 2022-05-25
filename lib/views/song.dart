@@ -32,14 +32,14 @@ class _SongViewState extends State<SongView> {
           child: Column(
             children: [
               _buildTop(),
-              SizedBox(height: 60),
+              SizedBox(height: 70),
               Image.asset(
                 widget.song.coverImage,
                 width: width - 48,
                 height: width - 48,
                 fit: BoxFit.cover,
               ),
-              SizedBox(height: 60),
+              SizedBox(height: 70),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
@@ -107,7 +107,7 @@ class _SongViewState extends State<SongView> {
   }
 
   Widget _buildTop() => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
         child: Row(
           children: [
             OpacityFeedback(
@@ -123,7 +123,7 @@ class _SongViewState extends State<SongView> {
                 children: [
                   Text(
                     'PLAYING FROM YOUR LIBRARY',
-                    style: TextStyle(fontSize: 11, letterSpacing: 1),
+                    style: TextStyle(fontSize: 10, letterSpacing: 1),
                   ),
                   SizedBox(height: 2),
                   Text(
