@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify_clone/constants/palette.dart';
 import 'package:spotify_clone/models/song.dart';
@@ -13,6 +14,36 @@ class SongView extends StatefulWidget {
 }
 
 class _SongViewState extends State<SongView> {
+  bool _isPlaying = false;
+  Duration _position = Duration.zero;
+  Duration _totalDuration = Duration.zero;
+
+  AudioPlayer? _player;
+  AudioCache? _cache;
+
+  @override
+  void initState() {
+    super.initState();
+    _player = AudioPlayer();
+    _cache = AudioCache(fixedPlayer: _player);
+
+    _player!.onDurationChanged.listen((duration) {
+      setState(() => _totalDuration = duration);
+    });
+    _player!.onAudioPositionChanged.listen((newPosition) {
+      setState(() => _position = newPosition);
+    });
+    _player!.onPlayerCompletion.listen((event) {
+      setState(() => _isPlaying = false);
+    });
+  }
+
+  @override
+  void dispose() {
+    _player?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -46,26 +77,19 @@ class _SongViewState extends State<SongView> {
                   children: [
                     _buildSongDetails(),
                     SizedBox(height: 28),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value: 0.3,
-                        color: Colors.white,
-                        backgroundColor: Colors.white.withOpacity(0.1),
-                      ),
-                    ),
+                    _buildPositionIndicator(),
                     SizedBox(height: 2),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '0:00',
+                          formatDuration(_position),
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.6),
                           ),
                         ),
                         Text(
-                          '3:26',
+                          formatDuration(_totalDuration),
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.6),
                           ),
@@ -73,29 +97,7 @@ class _SongViewState extends State<SongView> {
                       ],
                     ),
                     SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(Icons.shuffle, size: 24, color: Colors.white),
-                        Spacer(flex: 3),
-                        Icon(Icons.skip_previous,
-                            size: 36, color: Colors.white),
-                        Spacer(flex: 2),
-                        Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30)),
-                          child: Center(
-                            child: Icon(Icons.play_arrow, size: 36),
-                          ),
-                        ),
-                        Spacer(flex: 2),
-                        Icon(Icons.skip_next, size: 36, color: Colors.white),
-                        Spacer(flex: 3),
-                        Icon(Icons.loop, size: 24, color: Colors.white),
-                      ],
-                    ),
+                    _buildActions(),
                   ],
                 ),
               ),
@@ -170,4 +172,91 @@ class _SongViewState extends State<SongView> {
           ),
         ],
       );
+
+  Widget _buildPositionIndicator() => FractionallySizedBox(
+        widthFactor: 1.04,
+        child: SliderTheme(
+          data: SliderThemeData(
+            overlayShape: SliderComponentShape.noOverlay,
+            trackShape: CustomTrackShape(),
+            thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6),
+            trackHeight: 4,
+          ),
+          child: Slider(
+            min: 0,
+            max: _totalDuration.inSeconds.toDouble(),
+            value: _position.inSeconds.toDouble(),
+            onChanged: (value) {
+              _player!.seek(Duration(seconds: value.toInt()));
+            },
+            activeColor: Colors.white,
+            inactiveColor: Colors.white.withOpacity(0.1),
+          ),
+        ),
+      );
+
+  Widget _buildActions() => Row(
+        children: [
+          Icon(Icons.shuffle, size: 24, color: Colors.white),
+          Spacer(flex: 3),
+          Icon(Icons.skip_previous, size: 36, color: Colors.white),
+          Spacer(flex: 2),
+          OpacityFeedback(
+            onPressed: () {
+              setState(() => _isPlaying = !_isPlaying);
+              if (_isPlaying) {
+                _cache!.play(widget.song.mp3Path);
+              } else {
+                _player!.pause();
+              }
+            },
+            child: Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Center(
+                child: Icon(
+                  _isPlaying ? Icons.pause : Icons.play_arrow,
+                  size: 36,
+                ),
+              ),
+            ),
+          ),
+          Spacer(flex: 2),
+          Icon(Icons.skip_next, size: 36, color: Colors.white),
+          Spacer(flex: 3),
+          Icon(Icons.loop, size: 24, color: Colors.white),
+        ],
+      );
+}
+
+String formatDuration(Duration duration) {
+  final seconds = (duration.inSeconds % 60).toString().padLeft(2, '0');
+  return '${duration.inMinutes}:$seconds';
+}
+
+class CustomTrackShape extends RoundedRectSliderTrackShape {
+  @override
+  void paint(PaintingContext context, Offset offset,
+      {required RenderBox parentBox,
+      required SliderThemeData sliderTheme,
+      required Animation<double> enableAnimation,
+      required TextDirection textDirection,
+      required Offset thumbCenter,
+      bool isDiscrete = false,
+      bool isEnabled = false,
+      double additionalActiveTrackHeight = 2}) {
+    super.paint(context, offset,
+        parentBox: parentBox,
+        sliderTheme: sliderTheme,
+        enableAnimation: enableAnimation,
+        textDirection: textDirection,
+        thumbCenter: thumbCenter,
+        isDiscrete: isDiscrete,
+        isEnabled: isEnabled,
+        additionalActiveTrackHeight: 0);
+  }
 }

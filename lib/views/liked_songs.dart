@@ -73,14 +73,12 @@ class _LikedSongsViewState extends State<LikedSongsView> {
           ),
         ],
       ),
+      // TODO
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8),
         child: SafeArea(
-          child: Material(
-            color: Colors.transparent,
-            child: CurrentlyPlayingSong(
-              song: _selectedSong,
-            ),
+          child: CurrentlyPlayingSong(
+            song: _selectedSong,
           ),
         ),
       ),
