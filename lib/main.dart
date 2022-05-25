@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spotify_clone/models/song.dart';
 import 'package:spotify_clone/views/liked_songs.dart';
-import 'package:spotify_clone/widgets/currently_playing_song.dart';
 
 void main() {
   runApp(const MyApp());
