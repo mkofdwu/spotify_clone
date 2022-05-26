@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:spotify_clone/constants/liked_songs.dart';
 import 'package:spotify_clone/constants/palette.dart';
+import 'package:spotify_clone/controllers/song_controller.dart';
 import 'package:spotify_clone/models/song.dart';
 import 'package:spotify_clone/widgets/currently_playing_song.dart';
 import 'package:spotify_clone/widgets/shrink_feedback.dart';
@@ -20,7 +22,6 @@ class _LikedSongsViewState extends State<LikedSongsView> {
   // feels kind of hacky idk
   double _appBarOpacity = 0;
   double _appBarTextOpacity = 0;
-  Song _selectedSong = likedSongs[0];
 
   @override
   void initState() {
@@ -36,53 +37,63 @@ class _LikedSongsViewState extends State<LikedSongsView> {
         }
       });
     });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Get.find<SongController>().selectPlaylist(likedSongs, 0);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     // first section: building the main listview
-    return Scaffold(
-      appBar: _buildAppBar(),
-      extendBodyBehindAppBar: true,
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverToBoxAdapter(
-            child: _buildHeader(),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, i) => ShrinkFeedback(
-                  // wrap with material to make entire tile clickable
-                  child: Material(
-                    color: Colors.transparent,
-                    child: SongTile(
-                      song: likedSongs[i],
-                      isSelected: likedSongs[i] == _selectedSong,
+    return GetBuilder<SongController>(builder: (controller) {
+      final currentSong = controller.currentSong;
+      return Scaffold(
+        appBar: _buildAppBar(),
+        extendBodyBehindAppBar: true,
+        body: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverToBoxAdapter(
+              child: _buildHeader(),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, i) => ShrinkFeedback(
+                    // wrap with material to make entire tile clickable
+                    child: Material(
+                      color: Colors.transparent,
+                      child: SongTile(
+                        song: likedSongs[i],
+                        isSelected: likedSongs[i] == currentSong,
+                      ),
                     ),
+                    onPressed: () {
+                      Get.find<SongController>().selectSong(i);
+                    },
                   ),
-                  onPressed: () {
-                    setState(() => _selectedSong = likedSongs[i]);
-                  },
+                  childCount: likedSongs.length,
                 ),
-                childCount: likedSongs.length,
               ),
             ),
-          ),
-        ],
-      ),
-      // TODO
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(8),
-        child: SafeArea(
-          child: CurrentlyPlayingSong(
-            song: _selectedSong,
-          ),
+          ],
         ),
-      ),
-    );
+        bottomNavigationBar: currentSong == null
+            ? null
+            : Padding(
+                padding: const EdgeInsets.all(8),
+                child: SafeArea(
+                  child: CurrentlyPlayingSong(
+                    song: currentSong,
+                    position: controller.position / controller.totalDuration,
+                    isPlaying: controller.isPlaying,
+                    playOrPause: controller.playOrPause,
+                  ),
+                ),
+              ),
+      );
+    });
   }
 
   PreferredSizeWidget _buildAppBar() => PreferredSize(

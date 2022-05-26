@@ -1,111 +1,80 @@
-import 'package:audioplayers/audioplayers.dart';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:spotify_clone/constants/palette.dart';
 import 'package:spotify_clone/models/song.dart';
+import 'package:spotify_clone/controllers/song_controller.dart';
 import 'package:spotify_clone/widgets/opacity_feedback.dart';
 
-class SongView extends StatefulWidget {
-  final Song song;
-
-  const SongView({Key? key, required this.song}) : super(key: key);
-
-  @override
-  State<SongView> createState() => _SongViewState();
-}
-
-class _SongViewState extends State<SongView> {
-  bool _isPlaying = false;
-  Duration _position = Duration.zero;
-  Duration _totalDuration = Duration.zero;
-
-  AudioPlayer? _player;
-  AudioCache? _cache;
-
-  @override
-  void initState() {
-    super.initState();
-    _player = AudioPlayer();
-    _cache = AudioCache(fixedPlayer: _player);
-
-    _player!.onDurationChanged.listen((duration) {
-      setState(() => _totalDuration = duration);
-    });
-    _player!.onAudioPositionChanged.listen((newPosition) {
-      setState(() => _position = newPosition);
-    });
-    _player!.onPlayerCompletion.listen((event) {
-      setState(() => _isPlaying = false);
-    });
-  }
-
-  @override
-  void dispose() {
-    _player?.dispose();
-    super.dispose();
-  }
+class SongView extends StatelessWidget {
+  const SongView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF775c5c),
-              Color(0xFF121212),
-            ],
+    return GetBuilder<SongController>(builder: (controller) {
+      final song = controller.currentSong;
+      return Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFF775c5c),
+                Color(0xFF121212),
+              ],
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              _buildTop(),
-              SizedBox(height: 70),
-              Image.asset(
-                widget.song.coverImage,
-                width: width - 48,
-                height: width - 48,
-                fit: BoxFit.cover,
-              ),
-              SizedBox(height: 70),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  children: [
-                    _buildSongDetails(),
-                    SizedBox(height: 28),
-                    _buildPositionIndicator(),
-                    SizedBox(height: 2),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          formatDuration(_position),
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.6),
-                          ),
-                        ),
-                        Text(
-                          formatDuration(_totalDuration),
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.6),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    _buildActions(),
-                  ],
+          child: SafeArea(
+            child: Column(
+              children: [
+                _buildTop(),
+                SizedBox(height: 70),
+                Image.asset(
+                  song!.coverImage,
+                  width: width - 48,
+                  height: width - 48,
+                  fit: BoxFit.cover,
                 ),
-              ),
-            ],
+                SizedBox(height: 70),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Column(
+                    children: [
+                      _buildSongDetails(song),
+                      SizedBox(height: 28),
+                      _buildPositionIndicator(controller),
+                      SizedBox(height: 2),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            formatDuration(controller.position),
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.6),
+                            ),
+                          ),
+                          Text(
+                            formatDuration(controller.totalDuration),
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.6),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      _buildActions(controller),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildTop() => Padding(
@@ -118,7 +87,7 @@ class _SongViewState extends State<SongView> {
                 size: 30,
                 color: Colors.white,
               ),
-              onPressed: () => Navigator.pop(context),
+              onPressed: Get.back,
             ),
             Expanded(
               child: Column(
@@ -140,20 +109,20 @@ class _SongViewState extends State<SongView> {
         ),
       );
 
-  Widget _buildSongDetails() => Row(
+  Widget _buildSongDetails(Song song) => Row(
         children: [
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.song.title,
+                  song.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                 ),
                 Text(
-                  widget.song.artistName,
+                  song.artistName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -166,14 +135,15 @@ class _SongViewState extends State<SongView> {
           ),
           SizedBox(width: 16),
           Icon(
-            widget.song.liked ? Icons.favorite : Icons.favorite_border,
-            color: widget.song.liked ? Palette.green : Colors.white,
+            song.liked ? Icons.favorite : Icons.favorite_border,
+            color: song.liked ? Palette.green : Colors.white,
             size: 24,
           ),
         ],
       );
 
-  Widget _buildPositionIndicator() => FractionallySizedBox(
+  Widget _buildPositionIndicator(SongController controller) =>
+      FractionallySizedBox(
         widthFactor: 1.04,
         child: SliderTheme(
           data: SliderThemeData(
@@ -184,10 +154,10 @@ class _SongViewState extends State<SongView> {
           ),
           child: Slider(
             min: 0,
-            max: _totalDuration.inSeconds.toDouble(),
-            value: _position.inSeconds.toDouble(),
+            max: controller.totalDuration.toDouble(),
+            value: controller.position.toDouble(),
             onChanged: (value) {
-              _player!.seek(Duration(seconds: value.toInt()));
+              controller.seek(value.toInt());
             },
             activeColor: Colors.white,
             inactiveColor: Colors.white.withOpacity(0.1),
@@ -195,21 +165,17 @@ class _SongViewState extends State<SongView> {
         ),
       );
 
-  Widget _buildActions() => Row(
+  Widget _buildActions(SongController controller) => Row(
         children: [
           Icon(Icons.shuffle, size: 24, color: Colors.white),
           Spacer(flex: 3),
-          Icon(Icons.skip_previous, size: 36, color: Colors.white),
+          OpacityFeedback(
+            child: Icon(Icons.skip_previous, size: 36, color: Colors.white),
+            onPressed: controller.prevSong,
+          ),
           Spacer(flex: 2),
           OpacityFeedback(
-            onPressed: () {
-              setState(() => _isPlaying = !_isPlaying);
-              if (_isPlaying) {
-                _cache!.play(widget.song.mp3Path);
-              } else {
-                _player!.pause();
-              }
-            },
+            onPressed: controller.playOrPause,
             child: Container(
               width: 60,
               height: 60,
@@ -219,23 +185,26 @@ class _SongViewState extends State<SongView> {
               ),
               child: Center(
                 child: Icon(
-                  _isPlaying ? Icons.pause : Icons.play_arrow,
+                  controller.isPlaying ? Icons.pause : Icons.play_arrow,
                   size: 36,
                 ),
               ),
             ),
           ),
           Spacer(flex: 2),
-          Icon(Icons.skip_next, size: 36, color: Colors.white),
+          OpacityFeedback(
+            child: Icon(Icons.skip_next, size: 36, color: Colors.white),
+            onPressed: controller.nextSong,
+          ),
           Spacer(flex: 3),
           Icon(Icons.loop, size: 24, color: Colors.white),
         ],
       );
 }
 
-String formatDuration(Duration duration) {
-  final seconds = (duration.inSeconds % 60).toString().padLeft(2, '0');
-  return '${duration.inMinutes}:$seconds';
+String formatDuration(int duration) {
+  final seconds = (duration % 60).toString().padLeft(2, '0');
+  return '${duration ~/ 60}:$seconds';
 }
 
 class CustomTrackShape extends RoundedRectSliderTrackShape {

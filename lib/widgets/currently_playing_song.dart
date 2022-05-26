@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:spotify_clone/constants/palette.dart';
+import 'package:spotify_clone/controllers/song_controller.dart';
 import 'package:spotify_clone/models/song.dart';
 import 'package:spotify_clone/views/song.dart';
+import 'package:spotify_clone/widgets/opacity_feedback.dart';
 
 class CurrentlyPlayingSong extends StatelessWidget {
   final Song song;
+  final double position; // from 0 to 1
+  final bool isPlaying;
+  final Function() playOrPause;
 
-  const CurrentlyPlayingSong({Key? key, required this.song}) : super(key: key);
+  const CurrentlyPlayingSong({
+    Key? key,
+    required this.song,
+    required this.position,
+    required this.isPlaying,
+    required this.playOrPause,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(PageRouteBuilder(
-          pageBuilder: ((context, animation, secondaryAnimation) =>
-              SongView(song: song)),
+          pageBuilder: ((context, animation, secondaryAnimation) => SongView()),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             final tween = Tween(begin: Offset(0, 1), end: Offset(0, 0));
             return SlideTransition(
@@ -75,10 +86,13 @@ class CurrentlyPlayingSong extends StatelessWidget {
                   size: 28,
                 ),
                 SizedBox(width: 12),
-                Icon(
-                  Icons.play_arrow,
-                  size: 34,
-                  color: Colors.white,
+                OpacityFeedback(
+                  onPressed: playOrPause,
+                  child: Icon(
+                    isPlaying ? Icons.pause : Icons.play_arrow,
+                    size: 34,
+                    color: Colors.white,
+                  ),
                 ),
                 SizedBox(width: 4),
               ],
@@ -90,7 +104,7 @@ class CurrentlyPlayingSong extends StatelessWidget {
               child: SizedBox(
                 height: 3,
                 child: LinearProgressIndicator(
-                  value: 0.2,
+                  value: position,
                   color: Colors.white,
                   backgroundColor: Colors.white.withOpacity(0.1),
                 ),
