@@ -39,7 +39,7 @@ class SongController extends GetxController {
     _player!.dispose();
   }
 
-  void selectPlaylist(List<Song> playlist, int index) {
+  void selectSongInPlaylist(List<Song> playlist, int index) {
     assert(index < playlist.length);
     _playlist = playlist;
     _index = index;
@@ -48,13 +48,13 @@ class SongController extends GetxController {
     update();
   }
 
-  void selectSong(int index) {
-    assert(index < _playlist.length);
-    _index = index;
-    _cache!.play(currentSong!.mp3Path);
-    isPlaying = true;
-    update();
-  }
+  // void selectSong(int index) {
+  //   assert(index < _playlist.length);
+  //   _index = index;
+  //   _cache!.play(currentSong!.mp3Path);
+  //   isPlaying = true;
+  //   update();
+  // }
 
   void prevSong() {
     if (_index > 0) {

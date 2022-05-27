@@ -40,9 +40,6 @@ class _LikedSongsViewState extends State<LikedSongsView> {
         }
       });
     });
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Get.find<SongController>().selectPlaylist(likedSongs, 0);
-    });
   }
 
   @override
@@ -127,7 +124,7 @@ class _LikedSongsViewState extends State<LikedSongsView> {
                     ),
                   ),
                   onPressed: () {
-                    Get.find<SongController>().selectSong(i);
+                    controller.selectSongInPlaylist(likedSongs, i);
                   },
                 ),
               ),
