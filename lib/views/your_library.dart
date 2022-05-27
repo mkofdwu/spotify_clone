@@ -40,7 +40,7 @@ class YourLibraryView extends StatelessWidget {
   }
 
   PreferredSizeWidget _buildAppBar() => PreferredSize(
-        preferredSize: Size.fromHeight(120),
+        preferredSize: Size.fromHeight(124),
         child: Container(
           decoration: BoxDecoration(
             border: Border(bottom: BorderSide(width: 2, color: Colors.black)),
@@ -102,14 +102,14 @@ class YourLibraryView extends StatelessWidget {
       );
 
   Widget _buildChip(String text) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.white),
+          border: Border.all(color: Colors.white.withOpacity(0.6)),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
           text,
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+          style: TextStyle(fontSize: 12),
         ),
       );
 
