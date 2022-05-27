@@ -26,11 +26,11 @@ class SongController extends GetxController {
     });
     _player!.onAudioPositionChanged.listen((newPosition) {
       position = newPosition.inSeconds;
+      update();
       if (position >= totalDuration) {
         // song ended
         nextSong();
       }
-      update();
     });
   }
 
@@ -61,6 +61,8 @@ class SongController extends GetxController {
       _index--;
       position = 0;
       _cache!.play(currentSong!.mp3Path);
+      isPlaying = true;
+      update();
     }
   }
 
@@ -73,7 +75,9 @@ class SongController extends GetxController {
       _index++;
       position = 0; // reset before playing next song
       _cache!.play(currentSong!.mp3Path);
+      isPlaying = true;
     }
+    update();
   }
 
   void addToQueue(Song song) {

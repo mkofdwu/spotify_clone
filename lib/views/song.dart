@@ -1,20 +1,19 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spotify_clone/constants/palette.dart';
 import 'package:spotify_clone/models/song.dart';
 import 'package:spotify_clone/controllers/song_controller.dart';
+import 'package:spotify_clone/utils/common_widgets.dart';
 import 'package:spotify_clone/widgets/opacity_feedback.dart';
 
 class SongView extends StatelessWidget {
   const SongView({Key? key}) : super(key: key);
 
+  SongController get controller => Get.find<SongController>();
+
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     return GetBuilder<SongController>(builder: (controller) {
-      final song = controller.currentSong;
       return Scaffold(
         body: Container(
           decoration: BoxDecoration(
@@ -28,53 +27,42 @@ class SongView extends StatelessWidget {
             ),
           ),
           child: SafeArea(
-            child: Column(
-              children: [
-                _buildTop(),
-                SizedBox(height: 70),
-                Image.asset(
-                  song!.coverImage,
-                  width: width - 48,
-                  height: width - 48,
-                  fit: BoxFit.cover,
-                ),
-                SizedBox(height: 70),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Column(
-                    children: [
-                      _buildSongDetails(song),
-                      SizedBox(height: 28),
-                      _buildPositionIndicator(controller),
-                      SizedBox(height: 2),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            formatDuration(controller.position),
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.6),
-                            ),
-                          ),
-                          Text(
-                            formatDuration(controller.totalDuration),
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.6),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 8),
-                      _buildActions(controller),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            child: _mainUi(),
           ),
         ),
       );
     });
+  }
+
+  Widget _mainUi() {
+    final song = controller.currentSong;
+    return Column(
+      children: [
+        _buildTop(),
+        SizedBox(height: 70),
+        Image.asset(
+          song!.coverImage,
+          width: Get.width - 48,
+          height: Get.width - 48,
+          fit: BoxFit.cover,
+        ),
+        SizedBox(height: 70),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: Column(
+            children: [
+              _buildSongDetails(song),
+              SizedBox(height: 28),
+              _buildPositionIndicator(),
+              SizedBox(height: 2),
+              _buildDurationTexts(),
+              SizedBox(height: 8),
+              _buildActions(),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildTop() => Padding(
@@ -82,24 +70,26 @@ class SongView extends StatelessWidget {
         child: Row(
           children: [
             OpacityFeedback(
+              onPressed: Get.back,
               child: Icon(
                 Icons.keyboard_arrow_down,
                 size: 30,
                 color: Colors.white,
               ),
-              onPressed: Get.back,
             ),
             Expanded(
               child: Column(
                 children: [
-                  Text(
+                  styledText(
                     'PLAYING FROM YOUR LIBRARY',
-                    style: TextStyle(fontSize: 10, letterSpacing: 1),
+                    fontSize: 10,
+                    letterSpacing: 1,
                   ),
                   SizedBox(height: 2),
-                  Text(
+                  styledText(
                     'Liked Songs',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
                   ),
                 ],
               ),
@@ -111,28 +101,20 @@ class SongView extends StatelessWidget {
 
   Widget _buildSongDetails(Song song) => Row(
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  song.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                ),
-                Text(
-                  song.artistName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.6),
-                    fontSize: 16,
-                  ),
-                ),
-              ],
+          expandedColumnStart([
+            styledText(
+              song.title,
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              oneLineEllipsis: true,
             ),
-          ),
+            styledText(
+              song.artistName,
+              color: Colors.white.withOpacity(0.6),
+              fontSize: 16,
+              oneLineEllipsis: true,
+            ),
+          ]),
           SizedBox(width: 16),
           Icon(
             song.liked ? Icons.favorite : Icons.favorite_border,
@@ -142,8 +124,7 @@ class SongView extends StatelessWidget {
         ],
       );
 
-  Widget _buildPositionIndicator(SongController controller) =>
-      FractionallySizedBox(
+  Widget _buildPositionIndicator() => FractionallySizedBox(
         widthFactor: 1.04,
         child: SliderTheme(
           data: SliderThemeData(
@@ -165,13 +146,31 @@ class SongView extends StatelessWidget {
         ),
       );
 
-  Widget _buildActions(SongController controller) => Row(
+  Widget _buildDurationTexts() => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            formatDuration(controller.position),
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.6),
+            ),
+          ),
+          Text(
+            formatDuration(controller.totalDuration),
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.6),
+            ),
+          ),
+        ],
+      );
+
+  Widget _buildActions() => Row(
         children: [
           Icon(Icons.shuffle, size: 24, color: Colors.white),
           Spacer(flex: 3),
           OpacityFeedback(
-            child: Icon(Icons.skip_previous, size: 36, color: Colors.white),
             onPressed: controller.prevSong,
+            child: Icon(Icons.skip_previous, size: 36, color: Colors.white),
           ),
           Spacer(flex: 2),
           OpacityFeedback(
@@ -193,8 +192,8 @@ class SongView extends StatelessWidget {
           ),
           Spacer(flex: 2),
           OpacityFeedback(
-            child: Icon(Icons.skip_next, size: 36, color: Colors.white),
             onPressed: controller.nextSong,
+            child: Icon(Icons.skip_next, size: 36, color: Colors.white),
           ),
           Spacer(flex: 3),
           Icon(Icons.loop, size: 24, color: Colors.white),

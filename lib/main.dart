@@ -19,7 +19,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData(
         fontFamily: 'CircularStd',
-        primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Color(0xFF121212),
         textTheme: const TextTheme(
           bodyText2: TextStyle(color: Colors.white),

@@ -3,10 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spotify_clone/constants/liked_songs.dart';
-import 'package:spotify_clone/constants/palette.dart';
 import 'package:spotify_clone/controllers/song_controller.dart';
-import 'package:spotify_clone/models/song.dart';
+import 'package:spotify_clone/utils/common_widgets.dart';
 import 'package:spotify_clone/widgets/currently_playing_song.dart';
+import 'package:spotify_clone/widgets/play_shuffle_button.dart';
 import 'package:spotify_clone/widgets/shrink_feedback.dart';
 import 'package:spotify_clone/widgets/song_tile.dart';
 
@@ -22,6 +22,8 @@ class _LikedSongsViewState extends State<LikedSongsView> {
   // feels kind of hacky idk
   double _appBarOpacity = 0;
   double _appBarTextOpacity = 0;
+
+  SongController get controller => Get.find<SongController>();
 
   @override
   void initState() {
@@ -46,46 +48,17 @@ class _LikedSongsViewState extends State<LikedSongsView> {
   Widget build(BuildContext context) {
     // first section: building the main listview
     return GetBuilder<SongController>(builder: (controller) {
-      final currentSong = controller.currentSong;
       return Scaffold(
         appBar: _buildAppBar(),
         extendBodyBehindAppBar: true,
-        body: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            SliverToBoxAdapter(
-              child: _buildHeader(),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, i) => ShrinkFeedback(
-                    // wrap with material to make entire tile clickable
-                    child: Material(
-                      color: Colors.transparent,
-                      child: SongTile(
-                        song: likedSongs[i],
-                        isSelected: likedSongs[i] == currentSong,
-                      ),
-                    ),
-                    onPressed: () {
-                      Get.find<SongController>().selectSong(i);
-                    },
-                  ),
-                  childCount: likedSongs.length,
-                ),
-              ),
-            ),
-          ],
-        ),
-        bottomNavigationBar: currentSong == null
+        body: _buildMainScrollView(),
+        bottomNavigationBar: controller.currentSong == null
             ? null
             : Padding(
                 padding: const EdgeInsets.all(8),
                 child: SafeArea(
                   child: CurrentlyPlayingSong(
-                    song: currentSong,
+                    song: controller.currentSong!,
                     position: controller.position / controller.totalDuration,
                     isPlaying: controller.isPlaying,
                     playOrPause: controller.playOrPause,
@@ -116,19 +89,47 @@ class _LikedSongsViewState extends State<LikedSongsView> {
                 children: [
                   Icon(Icons.arrow_back, color: Colors.white, size: 20),
                   SizedBox(width: 28),
-                  Text(
+                  styledText(
                     'Liked Songs',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(_appBarTextOpacity),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    color: Colors.white.withOpacity(_appBarTextOpacity),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
                   ),
                 ],
               ),
             ),
           ),
         ),
+      );
+
+  Widget _buildMainScrollView() => CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverToBoxAdapter(
+            child: _buildHeader(),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                childCount: likedSongs.length,
+                (context, i) => ShrinkFeedback(
+                  // wrap with material to make entire tile clickable
+                  child: Material(
+                    color: Colors.transparent,
+                    child: SongTile(
+                      song: likedSongs[i],
+                      isSelected: likedSongs[i] == controller.currentSong,
+                    ),
+                  ),
+                  onPressed: () {
+                    Get.find<SongController>().selectSong(i);
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
       );
 
   Widget _buildHeader() => Container(
@@ -150,28 +151,21 @@ class _LikedSongsViewState extends State<LikedSongsView> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Liked Songs',
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w700),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        '166 songs',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.6),
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      _buildEnhanceButton(),
-                    ],
+                expandedColumnStart([
+                  styledText(
+                    'Liked Songs',
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
                   ),
-                ),
-                _buildPlayShuffleButton(),
+                  SizedBox(height: 8),
+                  styledText(
+                    '166 songs',
+                    color: Colors.white.withOpacity(0.6),
+                  ),
+                  SizedBox(height: 8),
+                  _buildEnhanceButton(),
+                ]),
+                PlayShuffleButton(),
               ],
             ),
           ),
@@ -188,41 +182,5 @@ class _LikedSongsViewState extends State<LikedSongsView> {
           'Enhance',
           style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
         ),
-      );
-
-  Widget _buildPlayShuffleButton() => Stack(
-        children: [
-          Container(
-            width: 50,
-            height: 50,
-            margin: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: Palette.green,
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: Center(
-              child: Icon(Icons.play_arrow, size: 32),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                color: Color(0xFF2a2a2a),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.shuffle,
-                  color: Palette.green,
-                  size: 16,
-                ),
-              ),
-            ),
-          )
-        ],
       );
 }

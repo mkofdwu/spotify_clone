@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spotify_clone/constants/palette.dart';
 import 'package:spotify_clone/models/song.dart';
+import 'package:spotify_clone/utils/common_widgets.dart';
 import 'package:spotify_clone/widgets/song_tag.dart';
 
 class SongTile extends StatelessWidget {
@@ -26,9 +27,7 @@ class SongTile extends StatelessWidget {
           Image.asset(song.coverImage,
               width: 50, height: 50, fit: BoxFit.cover),
           SizedBox(width: 12),
-          Expanded(
-            child: _buildDetails(),
-          ),
+          _buildDetails(),
           SizedBox(width: 16),
           if (song.liked) ...[
             Icon(Icons.favorite, color: Palette.green, size: 20),
@@ -43,35 +42,26 @@ class SongTile extends StatelessWidget {
     );
   }
 
-  Widget _buildDetails() => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            song.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: isSelected ? Palette.green : Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          SizedBox(height: 4),
-          Row(
-            children: [
-              for (final tag in song.tags) SongTag(tag: tag),
-              Flexible(
-                child: Text(
-                  song.artistName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.6),
-                  ),
-                ),
+  Widget _buildDetails() => expandedColumnStart([
+        styledText(
+          song.title,
+          color: isSelected ? Palette.green : Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          oneLineEllipsis: true,
+        ),
+        SizedBox(height: 4),
+        Row(
+          children: [
+            for (final tag in song.tags) SongTag(tag: tag),
+            Flexible(
+              child: styledText(
+                song.artistName,
+                color: Colors.white.withOpacity(0.6),
+                oneLineEllipsis: true,
               ),
-            ],
-          ),
-        ],
-      );
+            ),
+          ],
+        ),
+      ]);
 }
