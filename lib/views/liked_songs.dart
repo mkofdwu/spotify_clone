@@ -6,6 +6,7 @@ import 'package:spotify_clone/constants/liked_songs.dart';
 import 'package:spotify_clone/controllers/song_controller.dart';
 import 'package:spotify_clone/utils/common_widgets.dart';
 import 'package:spotify_clone/widgets/currently_playing_song.dart';
+import 'package:spotify_clone/widgets/opacity_feedback.dart';
 import 'package:spotify_clone/widgets/play_shuffle_button.dart';
 import 'package:spotify_clone/widgets/shrink_feedback.dart';
 import 'package:spotify_clone/widgets/song_tile.dart';
@@ -87,7 +88,10 @@ class _LikedSongsViewState extends State<LikedSongsView> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
               child: Row(
                 children: [
-                  Icon(Icons.arrow_back, color: Colors.white, size: 20),
+                  OpacityFeedback(
+                    onPressed: Get.back,
+                    child: Icon(Icons.arrow_back, size: 20),
+                  ),
                   SizedBox(width: 28),
                   styledText(
                     'Liked Songs',

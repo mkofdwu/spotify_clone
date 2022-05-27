@@ -71,11 +71,7 @@ class SongView extends StatelessWidget {
           children: [
             OpacityFeedback(
               onPressed: Get.back,
-              child: Icon(
-                Icons.keyboard_arrow_down,
-                size: 30,
-                color: Colors.white,
-              ),
+              child: Icon(Icons.keyboard_arrow_down, size: 30),
             ),
             Expanded(
               child: Column(
@@ -94,7 +90,7 @@ class SongView extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.more_vert, color: Colors.white),
+            Icon(Icons.more_vert),
           ],
         ),
       );
@@ -166,11 +162,11 @@ class SongView extends StatelessWidget {
 
   Widget _buildActions() => Row(
         children: [
-          Icon(Icons.shuffle, size: 24, color: Colors.white),
+          Icon(Icons.shuffle, size: 24),
           Spacer(flex: 3),
           OpacityFeedback(
             onPressed: controller.prevSong,
-            child: Icon(Icons.skip_previous, size: 36, color: Colors.white),
+            child: Icon(Icons.skip_previous, size: 36),
           ),
           Spacer(flex: 2),
           OpacityFeedback(
@@ -185,6 +181,7 @@ class SongView extends StatelessWidget {
               child: Center(
                 child: Icon(
                   controller.isPlaying ? Icons.pause : Icons.play_arrow,
+                  color: Colors.black,
                   size: 36,
                 ),
               ),
@@ -193,10 +190,10 @@ class SongView extends StatelessWidget {
           Spacer(flex: 2),
           OpacityFeedback(
             onPressed: controller.nextSong,
-            child: Icon(Icons.skip_next, size: 36, color: Colors.white),
+            child: Icon(Icons.skip_next, size: 36),
           ),
           Spacer(flex: 3),
-          Icon(Icons.loop, size: 24, color: Colors.white),
+          Icon(Icons.loop, size: 24),
         ],
       );
 }

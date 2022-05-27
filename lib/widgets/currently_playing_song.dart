@@ -95,7 +95,6 @@ class CurrentlyPlayingSong extends StatelessWidget {
             child: Icon(
               isPlaying ? Icons.pause : Icons.play_arrow,
               size: 34,
-              color: Colors.white,
             ),
           ),
           SizedBox(width: 4),

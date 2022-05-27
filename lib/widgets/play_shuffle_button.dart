@@ -26,7 +26,7 @@ class PlayShuffleButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(25),
                 ),
                 child: Center(
-                  child: Icon(Icons.play_arrow, size: 32),
+                  child: Icon(Icons.play_arrow, color: Colors.black, size: 32),
                 ),
               ),
             ),

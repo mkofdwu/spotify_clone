@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spotify_clone/controllers/song_controller.dart';
-import 'package:spotify_clone/views/liked_songs.dart';
+import 'package:spotify_clone/views/your_library.dart';
 
 void main() {
   Get.put(SongController(), permanent: true);
@@ -23,9 +23,10 @@ class MyApp extends StatelessWidget {
         textTheme: const TextTheme(
           bodyText2: TextStyle(color: Colors.white),
         ),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       themeMode: ThemeMode.dark,
-      home: const LikedSongsView(),
+      home: const YourLibraryView(),
     );
   }
 }
