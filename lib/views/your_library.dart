@@ -4,6 +4,7 @@ import 'package:spotify_clone/constants/liked_songs.dart';
 import 'package:spotify_clone/models/playlist.dart';
 import 'package:spotify_clone/utils/common_widgets.dart';
 import 'package:spotify_clone/views/liked_songs.dart';
+import 'package:spotify_clone/widgets/app_bottom_bar.dart';
 import 'package:spotify_clone/widgets/opacity_feedback.dart';
 import 'package:spotify_clone/widgets/playlist_tile.dart';
 import 'package:spotify_clone/widgets/shrink_feedback.dart';
@@ -36,6 +37,7 @@ class YourLibraryView extends StatelessWidget {
     return Scaffold(
       appBar: _buildAppBar(),
       body: _buildMainScrollView(),
+      bottomSheet: AppBottomBar(),
     );
   }
 

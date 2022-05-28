@@ -24,6 +24,9 @@ class MyApp extends StatelessWidget {
           bodyText2: TextStyle(color: Colors.white),
         ),
         iconTheme: IconThemeData(color: Colors.white),
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+        ),
       ),
       themeMode: ThemeMode.dark,
       home: const YourLibraryView(),

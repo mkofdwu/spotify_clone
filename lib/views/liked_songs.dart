@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:spotify_clone/constants/liked_songs.dart';
 import 'package:spotify_clone/controllers/song_controller.dart';
 import 'package:spotify_clone/utils/common_widgets.dart';
-import 'package:spotify_clone/widgets/currently_playing_song.dart';
+import 'package:spotify_clone/widgets/app_bottom_bar.dart';
 import 'package:spotify_clone/widgets/opacity_feedback.dart';
 import 'package:spotify_clone/widgets/play_shuffle_button.dart';
 import 'package:spotify_clone/widgets/shrink_feedback.dart';
@@ -50,19 +50,7 @@ class _LikedSongsViewState extends State<LikedSongsView> {
         appBar: _buildAppBar(),
         extendBodyBehindAppBar: true,
         body: _buildMainScrollView(),
-        bottomNavigationBar: controller.currentSong == null
-            ? null
-            : Padding(
-                padding: const EdgeInsets.all(8),
-                child: SafeArea(
-                  child: CurrentlyPlayingSong(
-                    song: controller.currentSong!,
-                    position: controller.position / controller.totalDuration,
-                    isPlaying: controller.isPlaying,
-                    playOrPause: controller.playOrPause,
-                  ),
-                ),
-              ),
+        bottomSheet: AppBottomBar(),
       );
     });
   }

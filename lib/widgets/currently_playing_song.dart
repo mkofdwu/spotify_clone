@@ -54,6 +54,13 @@ class CurrentlyPlayingSong extends StatelessWidget {
         decoration: BoxDecoration(
           color: Color(0xFF48443C),
           borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.6),
+              offset: Offset(0, 12),
+              blurRadius: 24,
+            ),
+          ],
         ),
         child: child,
       );
