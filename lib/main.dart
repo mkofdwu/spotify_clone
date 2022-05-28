@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotify_clone/constants/routes.dart';
 import 'package:spotify_clone/controllers/song_controller.dart';
+import 'package:spotify_clone/views/current_song.dart';
+import 'package:spotify_clone/views/liked_songs.dart';
 import 'package:spotify_clone/views/your_library.dart';
 
 void main() {
@@ -29,7 +32,23 @@ class MyApp extends StatelessWidget {
         ),
       ),
       themeMode: ThemeMode.dark,
-      home: const YourLibraryView(),
+      defaultTransition: Transition.fadeIn,
+      initialRoute: Routes.yourLibrary,
+      getPages: [
+        GetPage(
+          name: Routes.yourLibrary,
+          page: () => YourLibraryView(),
+        ),
+        GetPage(
+          name: Routes.likedSongs,
+          page: () => LikedSongsView(),
+        ),
+        GetPage(
+          name: Routes.currentSong,
+          page: () => CurrentSongView(),
+          transition: Transition.downToUp,
+        ),
+      ],
     );
   }
 }

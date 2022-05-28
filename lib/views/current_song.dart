@@ -6,8 +6,8 @@ import 'package:spotify_clone/controllers/song_controller.dart';
 import 'package:spotify_clone/utils/common_widgets.dart';
 import 'package:spotify_clone/widgets/opacity_feedback.dart';
 
-class SongView extends StatelessWidget {
-  const SongView({Key? key}) : super(key: key);
+class CurrentSongView extends StatelessWidget {
+  const CurrentSongView({Key? key}) : super(key: key);
 
   SongController get controller => Get.find<SongController>();
 
