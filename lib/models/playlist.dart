@@ -6,6 +6,7 @@ class Playlist {
   final String ownerName;
   final bool isAlbum;
   final bool isPinned;
+  final DateTime? albumReleaseDate;
   final List<Song> songs;
 
   Playlist({
@@ -14,6 +15,7 @@ class Playlist {
     required this.ownerName,
     required this.isAlbum,
     required this.isPinned,
+    this.albumReleaseDate,
     required this.songs,
   });
 }

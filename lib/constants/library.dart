@@ -1,4 +1,5 @@
 import 'package:spotify_clone/models/song.dart';
+import 'package:spotify_clone/models/playlist.dart';
 
 final likedSongs = [
   Song(
@@ -94,5 +95,76 @@ final likedSongs = [
     tags: ['Lyrics', 'E'],
     mp3Path: 'songs/marvin_gaye.mp3',
     liked: false,
+  ),
+];
+
+final library = [
+  Playlist(
+    title: 'Liked Songs',
+    coverImage: 'assets/images/liked_songs.png',
+    ownerName: 'mkofdwu',
+    isAlbum: false,
+    isPinned: true,
+    songs: likedSongs,
+  ),
+  Playlist(
+    title:
+        'Interstellar (Original Motion Picture Soundtrack) [Expanded Edition]',
+    coverImage: 'assets/images/interstellar.jpeg',
+    ownerName: 'Hans Zimmer',
+    isAlbum: true,
+    isPinned: false,
+    albumReleaseDate: DateTime(2014, 11, 18),
+    songs: [
+          'Dreaming of the Crash',
+          'Cornfield Chase',
+          'Dust',
+          'Day One',
+          'Stay',
+          'Message from Home',
+          'The Wormhole',
+          'Mountains',
+          'Afraid of Time',
+          'A Place Among the Stars',
+          'Running Out',
+          'I\'m Going Home',
+          'Coward',
+          'Detach',
+          'S.T.A.Y',
+          'Where We\'re Going',
+          'First Step',
+          'Flying Drone',
+          'Atmospheric Entry',
+          'No Need to Come Back',
+          'Imperfect Lock',
+          'No Time for Caution',
+          'What Happens Now?',
+          'Who\'s They?',
+          'Murph',
+          'Organ Variation',
+          'Tick-Tock',
+          'Day One - Original Demo',
+          'Day One Dark'
+        ]
+            .map((title) => Song(
+                  title: title,
+                  artistName: 'Hans Zimmer',
+                  coverImage: 'assets/images/interstellar.jpeg',
+                  tags: [],
+                  mp3Path: '',
+                  liked: false,
+                ))
+            .toList() +
+        [
+          Song(
+            title: 'Do Not Go Gentle Into That Good Night',
+            artistName:
+                'Hans Zimmer, John Lithgow, Ellen Burstyn, Casey Affleck, Jessica Chastain, Matthew McConaughey, Mackenzie Foy',
+            coverImage: 'assets/images/interstellar.jpeg',
+            tags: [],
+            mp3Path: '',
+            liked: false,
+          )
+        ],
   ),
 ];

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spotify_clone/constants/routes.dart';
 import 'package:spotify_clone/controllers/song_controller.dart';
+import 'package:spotify_clone/views/album.dart';
 import 'package:spotify_clone/views/current_song.dart';
 import 'package:spotify_clone/views/liked_songs.dart';
 import 'package:spotify_clone/views/your_library.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Flutter Demo',
+      title: 'Spotify Clone',
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData(
         fontFamily: 'CircularStd',
@@ -42,6 +43,10 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: Routes.likedSongs,
           page: () => LikedSongsView(),
+        ),
+        GetPage(
+          name: Routes.album,
+          page: () => AlbumView(),
         ),
         GetPage(
           name: Routes.currentSong,

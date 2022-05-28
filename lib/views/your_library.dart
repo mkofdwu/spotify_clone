@@ -1,33 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spotify_clone/constants/liked_songs.dart';
+import 'package:spotify_clone/constants/library.dart';
 import 'package:spotify_clone/constants/routes.dart';
-import 'package:spotify_clone/models/playlist.dart';
 import 'package:spotify_clone/utils/common_widgets.dart';
 import 'package:spotify_clone/widgets/app_bottom_bar.dart';
 import 'package:spotify_clone/widgets/opacity_feedback.dart';
 import 'package:spotify_clone/widgets/playlist_tile.dart';
 import 'package:spotify_clone/widgets/shrink_feedback.dart';
-
-final playlists = [
-  Playlist(
-    title: 'Liked Songs',
-    coverImage: 'assets/images/liked_songs.png',
-    ownerName: 'mkofdwu',
-    isAlbum: false,
-    isPinned: true,
-    songs: likedSongs,
-  ),
-  Playlist(
-    title:
-        'Interstellar (Original Motion Picture Soundtrack) [Expanded Edition]',
-    coverImage: 'assets/images/interstellar.jpeg',
-    ownerName: 'Hans Zimmer',
-    isAlbum: true,
-    isPinned: false,
-    songs: [],
-  ),
-];
 
 class YourLibraryView extends StatelessWidget {
   const YourLibraryView({Key? key}) : super(key: key);
@@ -127,17 +106,19 @@ class YourLibraryView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
-                childCount: playlists.length,
+                childCount: library.length,
                 (context, i) => ShrinkFeedback(
                   onPressed: () {
-                    if (playlists[i].title == 'Liked Songs') {
+                    if (library[i].title == 'Liked Songs') {
                       Get.toNamed(Routes.likedSongs);
+                    } else if (library[i].isAlbum) {
+                      Get.toNamed(Routes.album, arguments: library[i]);
                     }
                   },
                   child: Material(
                     color: Colors.transparent,
                     child: PlaylistTile(
-                      playlist: playlists[i],
+                      playlist: library[i],
                       isSelected: false,
                     ),
                   ),

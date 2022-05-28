@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spotify_clone/constants/liked_songs.dart';
+import 'package:spotify_clone/constants/library.dart';
 import 'package:spotify_clone/controllers/song_controller.dart';
 import 'package:spotify_clone/utils/common_widgets.dart';
 import 'package:spotify_clone/widgets/app_bottom_bar.dart';
@@ -91,14 +91,18 @@ class _LikedSongsViewState extends State<LikedSongsView> {
         ),
       );
 
-  Widget _buildMainScrollView() => CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverToBoxAdapter(
-            child: _buildHeader(),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+  Widget _buildMainScrollView() {
+    final double bottomPadding = controller.currentSong == null ? 80 : 150;
+    return CustomScrollView(
+      controller: _scrollController,
+      slivers: [
+        SliverToBoxAdapter(
+          child: _buildHeader(),
+        ),
+        SliverSafeArea(
+          top: false,
+          sliver: SliverPadding(
+            padding: EdgeInsets.fromLTRB(20, 0, 20, bottomPadding),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 childCount: likedSongs.length,
@@ -118,8 +122,10 @@ class _LikedSongsViewState extends State<LikedSongsView> {
               ),
             ),
           ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 
   Widget _buildHeader() => Container(
         decoration: BoxDecoration(
