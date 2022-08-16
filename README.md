@@ -1,6 +1,9 @@
 # spotify_clone
 
-A new Flutter project.
+<img src="liked_songs.jpeg" width="300" />
+<img src="current_song.jpeg" width="300" />
+
+Simple spotify clone with only liked songs and current song pages implemented.
 
 ## Getting Started
 
