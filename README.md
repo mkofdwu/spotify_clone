@@ -1,7 +1,9 @@
 # spotify_clone
 
-<img src="liked_songs.jpeg" width="300" />
-<img src="current_song.jpeg" width="300" />
+<div>
+  <img src="liked_songs.jpeg" width="300" />
+  <img src="current_song.jpeg" width="300" />
+</div>
 
 Simple spotify clone with only liked songs and current song pages implemented.
 
